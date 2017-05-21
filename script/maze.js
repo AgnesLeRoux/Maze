@@ -1,5 +1,31 @@
-var m = 3; //nbRows
-var n = 3; //nbColumns
+var m = 4; //nbRows
+var n = 4; //nbColumns
+
+var scale= 50;
+var zone = document.getElementById("zone");
+var context = zone.getContext("2d");
+ 
+console.log("width=" + zone.width);
+console.log("height=" +zone.height);
+ 
+//zone.style.width = (n*scale)+"px";
+//zone.style.height = (m*scale)+"px";
+
+function getWidth()
+{
+	return (n*scale)+"px";
+}
+
+function getHeight()
+{
+	return (m*scale)+"px";
+}
+
+
+console.log("width=" + zone.width);
+console.log("height=" +zone.height);
+
+
 var nbCells = m*n;
 var infty = nbCells+1;
 
@@ -126,19 +152,23 @@ function PRIM(graph, weight) //compute the minimum spanning tree with the PRIM a
 	var doors = initializeTab(nbCells);//adjacency list
 	
 	for(var u=0; u<nbCells; u++)
-		for(var vId=0;vId<graph[u].length;vId++)
+		for(var vId=0 ; vId<graph[u].length ; vId++)
 		{
 			var v = graph[u][vId];
-			if(pred[v]==u || pred[u]==v)
+			if(u < v)
 			{
-				doors[u].push(v);
-				doors[v].push(u);
+				if(pred[v]==u || pred[u]==v)
+				{
+					doors[u].push(v);
+					doors[v].push(u);
+				}
+				else
+				{
+					walls[u].push(v);
+					walls[v].push(u);
+				}
 			}
-			else
-			{
-				walls[u].push(v);
-				walls[v].push(u);
-			}
+			
 		}
 	
 	return [doors,walls];
@@ -208,6 +238,63 @@ console.log("walls");
 for(var i=0;i<walls.length;i++)
 	console.log(walls[i]);
 
+function drawMaze(walls)
+{
+	for(var u=0 ; u< walls.length; u++)
+		for(var idV=0; idV<walls[u].length ; idV++)
+		{
+			var v = walls[u][idV];
+			if(u < v)
+				drawWall(u,v);
+		}
+}
+
+function drawWall(u,v)
+{
+	console.log("dessine wall" + u+" "+v);
+	context.strokeStyle = "black";
+	context.beginPath();
+	var point1 = id2Coord(u);
+	var point2 = id2Coord(v);
+	if(point1[0]==point2[0])
+	{
+		context.moveTo(scale*point1[0], point1[1]*scale);
+		context.lineTo(scale*(point1[0]+1), point1[1]*scale);
+	}
+	
+	context.closePath();
+	context.stroke();
+}
+
+//drawMaze(walls);
+
+function drawGrid()
+{
+	context.strokeStyle = "blue";
+	context.beginPath();
+	for(var i=0; i< m-1; i++)
+	{
+		console.log("draw line");
+		context.moveTo(0*scale,(i+1)*scale);
+		context.lineTo((n+1)*scale,(i+1)*scale);
+	}
+	context.closePath();
+	context.stroke();
+}
+
+drawGrid();
+
+
+function drawRectangle()
+{
+	console.log(scale);
+	context.fillStyle = "green";
+	context.fillRect(scale,scale,(2*scale),scale);
+	console.log(scale);
+	
+}
+
+//drawRectangle();
 
 /* test de la fonction myQuickSort
 var N = 4;

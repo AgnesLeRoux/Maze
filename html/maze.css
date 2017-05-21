@@ -1,0 +1,11 @@
+#zone { 
+	border: 1px solid black;
+	background-color: lightblue;
+	/*width: 200px;
+	height: 200px;*/
+}
+
+body
+{
+	margin: 0px;
+}
