@@ -1,7 +1,7 @@
 var m = 4; //nbRows
-var n = 4; //nbColumns
+var n = 10; //nbColumns
 
-var scale= 50;
+var scale= 20;
 var zone = document.getElementById("zone");
 var context = zone.getContext("2d");
  
@@ -10,6 +10,9 @@ console.log("height=" +zone.height);
  
 //zone.style.width = (n*scale)+"px";
 //zone.style.height = (m*scale)+"px";
+
+zone.setAttribute("width",(n*scale)+"px");
+zone.setAttribute("height",(m*scale)+"px");
 
 function getWidth()
 {
