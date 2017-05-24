@@ -1,5 +1,6 @@
-var m = 4; //nbRows
-var n = 10; //nbColumns
+
+var m = 3; //nbRows
+var n = 4; //nbColumns
 
 var scale= 20;
 var zone = document.getElementById("zone");
@@ -8,25 +9,17 @@ var context = zone.getContext("2d");
 console.log("width=" + zone.width);
 console.log("height=" +zone.height);
  
-//zone.style.width = (n*scale)+"px";
-//zone.style.height = (m*scale)+"px";
 
 zone.setAttribute("width",(n*scale)+"px");
 zone.setAttribute("height",(m*scale)+"px");
 
-function getWidth()
-{
-	return (n*scale)+"px";
-}
+/*
+zone.setAttribute("width","500px");
+zone.setAttribute("height","500px");
+*/
 
-function getHeight()
-{
-	return (m*scale)+"px";
-}
-
-
-console.log("width=" + zone.width);
-console.log("height=" +zone.height);
+console.log("width="  + zone.width);
+console.log("height=" + zone.height);
 
 
 var nbCells = m*n;
@@ -148,8 +141,8 @@ function PRIM(graph, weight) //compute the minimum spanning tree with the PRIM a
 			}
 		}
 	}
-	console.log("pred");
-	console.log(pred);
+	//console.log("pred");
+	//console.log(pred);
 	//return types
 	var walls = initializeTab(nbCells);//adjacency list
 	var doors = initializeTab(nbCells);//adjacency list
@@ -233,14 +226,16 @@ var primRes = PRIM(graph, weight);
 var doors = primRes[0];
 var walls = primRes[1];
 
+/*
 console.log("doors");
 for(var i=0;i<doors.length;i++)
 	console.log( doors[i] );
-
+*/
+/*
 console.log("walls");
 for(var i=0;i<walls.length;i++)
 	console.log(walls[i]);
-
+*/
 function drawMaze(walls)
 {
 	for(var u=0 ; u< walls.length; u++)
@@ -254,22 +249,28 @@ function drawMaze(walls)
 
 function drawWall(u,v)
 {
-	console.log("dessine wall" + u+" "+v);
 	context.strokeStyle = "black";
 	context.beginPath();
 	var point1 = id2Coord(u);
 	var point2 = id2Coord(v);
-	if(point1[0]==point2[0])
+	console.log(point1);
+	console.log(point2);
+	//vertical wall
+	if(point1[0] == point2[0])
 	{
-		context.moveTo(scale*point1[0], point1[1]*scale);
-		context.lineTo(scale*(point1[0]+1), point1[1]*scale);
+		console.log("dessine vertical wall" + u+" "+v);
+		context.moveTo(scale*point1[1], point1[0]*scale);
+		context.lineTo(scale*point1[1], point2[0]*scale);
 	}
-	
+	else //horizontal wall
+	{
+		console.log("dessine horizontal wall" + u+" "+v);
+	}
 	context.closePath();
 	context.stroke();
 }
 
-//drawMaze(walls);
+drawMaze(walls);
 
 function drawGrid()
 {
@@ -279,7 +280,13 @@ function drawGrid()
 	{
 		console.log("draw line");
 		context.moveTo(0*scale,(i+1)*scale);
-		context.lineTo((n+1)*scale,(i+1)*scale);
+		context.lineTo((n)*scale,(i+1)*scale);
+	}
+	for(var j=0; j<n-1;j++)
+	{
+		console.log("draw vertical");
+		context.moveTo((j+1)*scale,0*scale);
+		context.lineTo((j+1)*scale,(n)*scale);
 	}
 	context.closePath();
 	context.stroke();
