@@ -1,6 +1,6 @@
 
-var m = 30; //nbRows
-var n = 30; //nbColumns
+var m = 15; //nbRows
+var n = 15; //nbColumns
 
 var scale= 10;
 var zone = document.getElementById("zone");
@@ -9,21 +9,65 @@ var context = zone.getContext("2d");
 console.log("width=" + zone.width);
 console.log("height=" +zone.height);
  
-
 zone.setAttribute("width",(n*scale)+"px");
 zone.setAttribute("height",(m*scale)+"px");
 
-/*
-zone.setAttribute("width","500px");
-zone.setAttribute("height","500px");
-*/
-
-console.log("width="  + zone.width);
-console.log("height=" + zone.height);
-
+//console.log("width="  + zone.width);
+//console.log("height=" + zone.height);
 
 var nbCells = m*n;
 var infty = nbCells+1;
+
+function generateMaze()
+{
+	erase();
+	//adjacency list
+	var graph = [];
+	
+	for(i=0;i<m;i++)
+	{
+		for(j=0;j<n;j++)
+		{
+			graph.push(neighbours(i,j));
+		}
+	}
+
+	var weight = []; // weight[u][v] = weight of arc(i,j)
+	for(var u=0; u<nbCells;u++)
+	{
+		var line = [];
+		for(var v=0; v< nbCells; v++)
+		{
+			if(u !=v)
+				line.push(infty); //initialize to infty
+			else
+				line.push(0);
+		}  
+		weight.push(line);
+	}
+
+	for(var u=0; u<nbCells; u++)
+		for (var v=0; v<graph[u].length; v++)
+		{
+			if(weight[u][graph[u][v]] == infty)
+			{
+				weight[u][graph[u][v]] = Math.random();
+				weight[graph[u][v]][u] = weight[u][graph[u][v]];
+			}
+		}
+		
+		var primRes = PRIM(graph, weight);
+		var doors = primRes[0];
+		var walls = primRes[1];
+		
+		drawMaze(walls);
+		
+}
+
+function erase()
+{
+	context.clearRect(0,0,n*scale,m*scale);
+}
 
 function id2Coord(id)
 {
@@ -49,47 +93,6 @@ function neighbours(i,j)
 	
 	return neigh;
 }
-
-
-//adjacency list
-var graph = [];
-
-for(i=0;i<m;i++)
-{
-	for(j=0;j<n;j++)
-	{
-		graph.push(neighbours(i,j));
-	}
-}
-
-
-//for(var nb=0;nb<graph.length;nb++)
-//	console.log(graph[nb]);
-
-
-var weight = []; // weight[u][v] = weight of arc(i,j)
-for(var u=0; u<nbCells;u++)
-{
-	var line = [];
-	for(var v=0; v< nbCells; v++)
-	{
-		if(u !=v)
-			line.push(infty); //initialize to infty
-		else
-			line.push(0);
-	}  
-	weight.push(line);
-}
-
-for(var u=0; u<nbCells; u++)
-	for (var v=0; v<graph[u].length; v++)
-	{
-		if(weight[u][graph[u][v]] == infty)
-		{
-			weight[u][graph[u][v]] = Math.random();
-			weight[graph[u][v]][u] = weight[u][graph[u][v]];
-		}
-	}
 
 //just to print///////////////////
 /*
@@ -222,9 +225,7 @@ function partition(A,c,p,r)
 	return (i+1);
 }
 
-var primRes = PRIM(graph, weight);
-var doors = primRes[0];
-var walls = primRes[1];
+
 
 /*
 console.log("doors");
@@ -269,8 +270,8 @@ function drawWall(u,v)
 	context.stroke();
 }
 
-drawMaze(walls);
 
+/*
 function drawGrid()
 {
 	context.strokeStyle = "blue";
@@ -288,7 +289,7 @@ function drawGrid()
 	context.closePath();
 	context.stroke();
 }
-
+*/
 //drawGrid();
 
 
