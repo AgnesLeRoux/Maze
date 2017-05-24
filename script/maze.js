@@ -1,8 +1,8 @@
 
-var m = 3; //nbRows
-var n = 4; //nbColumns
+var m = 30; //nbRows
+var n = 30; //nbColumns
 
-var scale= 20;
+var scale= 10;
 var zone = document.getElementById("zone");
 var context = zone.getContext("2d");
  
@@ -251,20 +251,19 @@ function drawWall(u,v)
 {
 	context.strokeStyle = "black";
 	context.beginPath();
+	
 	var point1 = id2Coord(u);
 	var point2 = id2Coord(v);
-	console.log(point1);
-	console.log(point2);
 	//vertical wall
 	if(point1[0] == point2[0])
 	{
-		console.log("dessine vertical wall" + u+" "+v);
-		context.moveTo(scale*point1[1], point1[0]*scale);
-		context.lineTo(scale*point1[1], point2[0]*scale);
+		context.moveTo(scale*(Math.max(point1[1],point2[1])), point1[0]*scale);
+		context.lineTo(scale*(Math.max(point1[1],point2[1])), (point1[0]+1)*scale);
 	}
 	else //horizontal wall
 	{
-		console.log("dessine horizontal wall" + u+" "+v);
+		context.moveTo(scale*(point1[1]), scale*(Math.max(point1[0],point2[0])));
+		context.lineTo(scale*(point1[1]+1), scale*(Math.max(point1[0],point2[0])));
 	}
 	context.closePath();
 	context.stroke();
@@ -278,13 +277,11 @@ function drawGrid()
 	context.beginPath();
 	for(var i=0; i< m-1; i++)
 	{
-		console.log("draw line");
 		context.moveTo(0*scale,(i+1)*scale);
 		context.lineTo((n)*scale,(i+1)*scale);
 	}
 	for(var j=0; j<n-1;j++)
 	{
-		console.log("draw vertical");
 		context.moveTo((j+1)*scale,0*scale);
 		context.lineTo((j+1)*scale,(n)*scale);
 	}
@@ -292,7 +289,7 @@ function drawGrid()
 	context.stroke();
 }
 
-drawGrid();
+//drawGrid();
 
 
 function drawRectangle()
