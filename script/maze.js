@@ -2,7 +2,7 @@
 var m = 15; //nbRows
 var n = 15; //nbColumns
 
-var scale= 10;
+var scale= 20;
 var zone = document.getElementById("zone");
 var context = zone.getContext("2d");
  
@@ -17,12 +17,16 @@ zone.setAttribute("height",(m*scale)+"px");
 
 var nbCells = m*n;
 var infty = nbCells+1;
+var graph = [];
+var doors = [];
+var walls = [];
+
 
 function generateMaze()
 {
 	erase();
 	//adjacency list
-	var graph = [];
+	
 	
 	for(i=0;i<m;i++)
 	{
@@ -57,11 +61,21 @@ function generateMaze()
 		}
 		
 		var primRes = PRIM(graph, weight);
-		var doors = primRes[0];
-		var walls = primRes[1];
+		doors = primRes[0];
+		walls = primRes[1];
 		
 		drawMaze(walls);
 		
+		/*
+		console.log("doors");;
+		for(var i=0;i<doors.length;i++)
+			console.log( doors[i] );
+		*/
+		/*
+		console.log("walls");
+		for(var i=0;i<walls.length;i++)
+			console.log(walls[i]);
+		*/
 }
 
 function erase()
@@ -225,18 +239,6 @@ function partition(A,c,p,r)
 	return (i+1);
 }
 
-
-
-/*
-console.log("doors");
-for(var i=0;i<doors.length;i++)
-	console.log( doors[i] );
-*/
-/*
-console.log("walls");
-for(var i=0;i<walls.length;i++)
-	console.log(walls[i]);
-*/
 function drawMaze(walls)
 {
 	for(var u=0 ; u< walls.length; u++)
@@ -270,53 +272,69 @@ function drawWall(u,v)
 	context.stroke();
 }
 
-
-/*
-function drawGrid()
+function Vertex(node,pred)
 {
-	context.strokeStyle = "blue";
-	context.beginPath();
-	for(var i=0; i< m-1; i++)
-	{
-		context.moveTo(0*scale,(i+1)*scale);
-		context.lineTo((n)*scale,(i+1)*scale);
-	}
-	for(var j=0; j<n-1;j++)
-	{
-		context.moveTo((j+1)*scale,0*scale);
-		context.lineTo((j+1)*scale,(n)*scale);
-	}
-	context.closePath();
-	context.stroke();
+	this.node = node;
+	this.pred = pred;
 }
-*/
-//drawGrid();
 
-
-function drawRectangle()
+function solveMaze()
 {
-	console.log(scale);
-	context.fillStyle = "green";
-	context.fillRect(scale,scale,(2*scale),scale);
-	console.log(scale);
+	var path = [];
+	initializePath(path);
 	
+	//console.log("doors");;
+	//for(var i=0;i<doors.length;i++)
+	//	console.log( doors[i] );
+
+	var stack = [];
+	var start = 0;
+	var end = nbCells - 1;
+	
+	var e = path[start];
+	stack.push(e);
+	while(e.node != end && stack.length>0)
+	{
+		e = stack.pop();
+		for(var nextId=0; nextId < doors[e.node].length; nextId++)
+		{
+			next = doors[e.node][nextId];
+			if(next != e.pred)
+			{
+				path[next].pred = e.node;
+				stack.push(path[next]);
+			}
+		} 
+	}
+	drawSolution(path, e);
+	drawMaze(walls);
 }
 
-//drawRectangle();
+function initializePath(path)
+{
+	for(var i=0; i<nbCells; i++)
+	{
+		path.push(new Vertex(i,-1));
+	}
+}
 
-/* test de la fonction myQuickSort
-var N = 4;
-var Atest = allTheVertices(N);
-console.log(Atest);
+function drawSolution(path, e)
+{
+	while(e.pred != -1)
+	{
+		drawRectangle(id2Coord(e.node),"red");
+		e = path[e.pred];
+	}
+	drawRectangle(id2Coord(e.node),"red");
+}
 
-var cTest = [12,2,65,10];
 
-console.log(cTest);
+function drawRectangle(coord,color)
+{
+	context.fillStyle = color;
+	context.fillRect(scale*coord[1] , scale*coord[0],  scale, scale);
+}
 
-myQuickSort(Atest,cTest,0,Atest.length-1);
-console.log(Atest);
-console.log(cTest);
-*/
 
 
 
