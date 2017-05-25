@@ -12,9 +12,13 @@
 Votre navigateur ne supporte pas la balise canvas.
 </canvas>
 <div>
-<button onclick="generateMaze()">Nouveau labyrinthe</button>
-<button onclick="solveMaze()">Solution</button>
+	<button onclick="generateMaze()">Nouveau labyrinthe</button>
+	<button onclick="solveMaze()">Solution</button>
+	<input  type="text"   id="nbRows" placeholder="nb Lignes" maxlength="2" size="1"/>
+	<input  type="text"   id="nbCols" placeholder="nb Colonnes" maxlength="2" size="1"/>
+	<input type="submit" value="Valider" onClick="changeSize()" />
 </div>
+
 <script src="./../script/maze.js"></script>
 
 </body>

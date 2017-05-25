@@ -1,6 +1,6 @@
 
-var m = 15; //nbRows
-var n = 15; //nbColumns
+var m = 30; //nbRows
+var n = 30; //nbColumns
 
 var scale= 20;
 var zone = document.getElementById("zone");
@@ -20,6 +20,20 @@ var infty = nbCells+1;
 var graph = [];
 var doors = [];
 var walls = [];
+
+
+function changeSize()
+{
+	erase();
+	var nbRowsStr = document.getElementById("nbRows").value;
+	m = Math.min(35,parseInt(nbRowsStr));
+	var nbColsStr = document.getElementById("nbCols").value;
+	n = Math.min(35,parseInt(nbColsStr));
+	zone.setAttribute("width",(n*scale)+"px");
+	zone.setAttribute("height",(m*scale)+"px");
+	nbCells = m*n;
+	infty = nbCells+1;
+}
 
 
 function generateMaze()
@@ -80,6 +94,9 @@ function generateMaze()
 
 function erase()
 {
+	graph = [];
+	doors = [];
+	walls = [];
 	context.clearRect(0,0,n*scale,m*scale);
 }
 
