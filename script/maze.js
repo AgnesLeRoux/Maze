@@ -329,6 +329,49 @@ function drawSolution(pred, e)
 	drawRectangle(id2Coord(e),"red");
 }
 
+function solveDynamic()
+{
+	var pred = [];
+	for(var i=0 ; i < nbCells ; i++)
+	{
+		pred.push(-1);
+	}
+	var stack = [];
+	var start = 0;
+	var end = nbCells - 1;
+	var lastExplored = -1;
+	
+	var e = start;
+	stack.push(e);
+	while(e != end && stack.length>0)
+	{
+		e = stack.pop();
+		drawRectangle(id2Coord(e),"red");
+		if(pred[e] != lastExplored)
+		{
+			var toErase = lastExplored;
+			var cpt=0;
+			while( toErase != pred[e] && cpt++ < 100)
+			{
+				drawRectangle(id2Coord(toErase),"lightblue");
+				toErase = pred[toErase];
+			}
+			console.log("cpt "+cpt);
+		}
+		
+		for(var nextId=0; nextId < doors[e].length; nextId++)
+		{
+			next = doors[e][nextId];
+			if(next != pred[e])
+			{
+				pred[next]= e;
+				stack.push(next);
+			}
+		}
+		lastExplored = e;
+	}
+	drawMaze(walls);
+}
 
 
 function drawRectangle(coord,color)
