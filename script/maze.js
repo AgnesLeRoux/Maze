@@ -289,61 +289,46 @@ function drawWall(u,v)
 	context.stroke();
 }
 
-function Vertex(node,pred)
-{
-	this.node = node;
-	this.pred = pred;
-}
-
 function solveMaze()
 {
-	var path = [];
-	initializePath(path);
 	
-	//console.log("doors");;
-	//for(var i=0;i<doors.length;i++)
-	//	console.log( doors[i] );
-
+	var pred = [];
+	for(var i=0 ; i < nbCells ; i++)
+	{
+		pred.push(-1);
+	}
 	var stack = [];
 	var start = 0;
 	var end = nbCells - 1;
 	
-	var e = path[start];
+	var e = start;
 	stack.push(e);
-	while(e.node != end && stack.length>0)
+	while(e != end && stack.length>0)
 	{
 		e = stack.pop();
-		for(var nextId=0; nextId < doors[e.node].length; nextId++)
+		for(var nextId=0; nextId < doors[e].length; nextId++)
 		{
-			next = doors[e.node][nextId];
-			if(next != e.pred)
+			next = doors[e][nextId];
+			if(next != pred[e])
 			{
-				path[next].pred = e.node;
-				stack.push(path[next]);
+				pred[next]= e;
+				stack.push(next);
 			}
 		} 
 	}
-	drawSolution(path, e);
+	drawSolution(pred,end);
 	drawMaze(walls);
 }
-
-function initializePath(path)
+function drawSolution(pred, e)
 {
-	for(var i=0; i<nbCells; i++)
+	while(pred[e] != -1)
 	{
-		path.push(new Vertex(i,-1));
+		drawRectangle(id2Coord(e),"red");
+		e = pred[e];
 	}
+	drawRectangle(id2Coord(e),"red");
 }
 
-function drawSolution(path, e)
-{
-	while(e.pred != -1)
-	{
-		drawRectangle(id2Coord(e.node),"red");
-		e = path[e.pred];
-	}
-	drawRectangle(id2Coord(e.node),"red");
-}
 
 
 function drawRectangle(coord,color)
@@ -351,8 +336,4 @@ function drawRectangle(coord,color)
 	context.fillStyle = color;
 	context.fillRect(scale*coord[1] , scale*coord[0],  scale, scale);
 }
-
-
-
-
 
