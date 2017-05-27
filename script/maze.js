@@ -1,6 +1,6 @@
 
-var m = 30; //nbRows
-var n = 30; //nbColumns
+var m = 10; //nbRows
+var n = 10; //nbColumns
 
 var scale= 20;
 var zone = document.getElementById("zone");
@@ -329,6 +329,7 @@ function drawSolution(pred, e)
 	drawRectangle(id2Coord(e),"red");
 }
 
+
 function solveDynamic()
 {
 	var pred = [];
@@ -336,43 +337,63 @@ function solveDynamic()
 	{
 		pred.push(-1);
 	}
+	
 	var stack = [];
 	var start = 0;
 	var end = nbCells - 1;
-	var lastExplored = -1;
 	
 	var e = start;
-	stack.push(e);
-	while(e != end && stack.length>0)
+	var exploreNext = true;
+	
+	var id = setInterval(nextStep, 125);
+	
+	function nextStep()
 	{
-		e = stack.pop();
-		drawRectangle(id2Coord(e),"red");
-		if(pred[e] != lastExplored)
+		if(exploreNext)
 		{
-			var toErase = lastExplored;
-			var cpt=0;
-			while( toErase != pred[e] && cpt++ < 100)
+			for(var nextId=0; nextId < doors[e].length; nextId++)
 			{
-				drawRectangle(id2Coord(toErase),"lightblue");
-				toErase = pred[toErase];
+				next = doors[e][nextId];
+				if(next != pred[e])
+				{
+					pred[next]= e;
+					stack.push(next);
+				}
 			}
-			console.log("cpt "+cpt);
+			lastExplored = e;
+			
+			drawRectangle(id2Coord(e),"red");
+			drawMaze(walls);
+			
+			if(e!=end)
+			{
+				e = stack.pop();
+			}
+			else
+			{
+				clearInterval(id);
+			}
+			
+			
+			if(pred[e] != lastExplored)
+			{
+				exploreNext = false;
+				toErase = lastExplored;
+			}
 		}
-		
-		for(var nextId=0; nextId < doors[e].length; nextId++)
+		else
 		{
-			next = doors[e][nextId];
-			if(next != pred[e])
-			{
-				pred[next]= e;
-				stack.push(next);
-			}
+			console.log(toErase);
+			drawRectangle(id2Coord(toErase),"lightblue");
+			drawMaze(walls);
+			toErase = pred[toErase];
+			if(toErase == pred[e])
+				exploreNext = true;
 		}
-		lastExplored = e;
-	}
-	drawMaze(walls);
+	}	
+	
+	
 }
-
 
 function drawRectangle(coord,color)
 {
